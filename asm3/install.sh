@@ -12,7 +12,9 @@ elif test -f $dst/MacOS/FreeCAD; then
     cp -a $src/MacBundle/* $dst/
     sed -i '' "s@_FC_BUNDLE_VERSION_@${FMK_BUILD_DATE}@g" $dst/Info.plist
     mv $dst/MacOS/FreeCAD $dst/MacOS/FreeCADLink
-elif test -f $dst/bin/FreeCAD; then
+elif test -f  $dst/bin/FreeCAD.exe; then
+    mv $dst/bin/FreeCAD.exe $dst/bin/FreeCADLink.exe
+elif test -f $dst/bin/FreeCAD && test -d $dst/share; then
     find $dst/share/ -type f -name org.freecadweb.FreeCAD* -exec \
         bash -c "sed -i 's|org.freecadweb.FreeCAD|$id|' "'$1 && mv $1 ${1%org.freecadweb.FreeCAD*}'$id'${1#*org.freecadweb.FreeCAD}' bash {} \;
     rm -f $dst/../*.desktop $dst/../*.png
@@ -20,8 +22,6 @@ elif test -f $dst/bin/FreeCAD; then
     cp $src/AppDir/$id.desktop $src/AppDir/$id.png $dst/../
     cp -a $src/icons $dst/share/
     mv $dst/bin/FreeCAD $dst/bin/FreeCADLink
-elif test -f  $dst/bin/FreeCAD.exe; then
-    mv $dst/bin/FreeCAD.exe $dst/bin/FreeCADLink.exe
 else
     echo failed to find bin directory
     exit 1
