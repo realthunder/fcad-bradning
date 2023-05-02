@@ -12,7 +12,9 @@ elif test -f $dst/MacOS/FreeCAD; then
     cp -a $src/MacBundle/* $dst/
     sed -i '' "s@_FC_BUNDLE_VERSION_@${FMK_BUILD_DATE}@g" $dst/Info.plist
     mv $dst/MacOS/FreeCAD $dst/MacOS/FreeCADLink
-elif test -f $dst/bin/FreeCAD; then
+elif test -f  $dst/bin/FreeCAD.exe; then
+    mv $dst/bin/FreeCAD.exe $dst/bin/FreeCADLink.exe
+elif test -f $dst/bin/FreeCAD && test -d $dst/share; then
     export appid=org.freecadweb.FreeCAD
     export newid=$id.Link
     # duplicate filename containing org.freecadweb.FreeCAD with new name in new id, and replace corresponding content
@@ -25,8 +27,6 @@ elif test -f $dst/bin/FreeCAD; then
     cp $src/AppDir/$newid.* $dst/share/
     cp -a $src/icons $dst/share/
     mv $dst/bin/FreeCAD $dst/bin/FreeCADLink
-elif test -f  $dst/bin/FreeCAD.exe; then
-    mv $dst/bin/FreeCAD.exe $dst/bin/FreeCADLink.exe
 else
     echo failed to find bin directory
     exit 1
