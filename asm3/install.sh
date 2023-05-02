@@ -13,11 +13,16 @@ elif test -f $dst/MacOS/FreeCAD; then
     sed -i '' "s@_FC_BUNDLE_VERSION_@${FMK_BUILD_DATE}@g" $dst/Info.plist
     mv $dst/MacOS/FreeCAD $dst/MacOS/FreeCADLink
 elif test -f $dst/bin/FreeCAD; then
-    find $dst/share/ -type f -name org.freecadweb.FreeCAD* -exec \
-        bash -c "sed -i 's|org.freecadweb.FreeCAD|$id|' "'$1 && mv $1 ${1%org.freecadweb.FreeCAD*}'$id'${1#*org.freecadweb.FreeCAD}' bash {} \;
-    rm -f $dst/../*.desktop $dst/../*.png
-    id=org.freecadweb.FreeCAD.Link
-    cp $src/AppDir/$id.desktop $src/AppDir/$id.png $dst/../
+    export appid=org.freecadweb.FreeCAD
+    export newid=$id.Link
+    # duplicate filename containing org.freecadweb.FreeCAD with new name in new id, and replace corresponding content
+    find $dst/share/ -type f -name $appid* -exec \
+        bash -c 'sed -i s|$appid|$newid| $1 && mv $1 ${1/$appid/$newid}' bash {} \;
+    if test -f $dst/../*.desktop; then
+        rm -f $dst/../*.desktop $dst/../*.png
+        cp $src/AppDir/$newid.* $dst/../
+    fi
+    cp $src/AppDir/$newid.* $dst/share/
     cp -a $src/icons $dst/share/
     mv $dst/bin/FreeCAD $dst/bin/FreeCADLink
 elif test -f  $dst/bin/FreeCAD.exe; then
