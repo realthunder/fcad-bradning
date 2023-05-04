@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 src=$1
 dst=$2
 branddir=${3:-$dst}
@@ -17,11 +17,11 @@ elif test -f $dst/MacOS/FreeCAD; then
 elif test -f  $dst/bin/FreeCAD.exe; then
     mv $dst/bin/FreeCAD.exe $dst/bin/FreeCADLink.exe
 elif test -f $dst/bin/FreeCAD && test -d $dst/share; then
-    export appid=org.freecadweb.FreeCAD
-    export newid=$id.Link
+    appid=org.freecadweb.FreeCAD
+    newid=$appid.Link
     # duplicate filename containing org.freecadweb.FreeCAD with new name in new id, and replace corresponding content
     find $dst/share/ -type f -name $appid* -exec \
-        bash -c 'sed -i s|$appid|$newid| $1 && mv $1 ${1/$appid/$newid}' bash {} \;
+        bash -c "sed 's|$appid|$newid|' "'$1 > ${1/'"$appid/$newid} && rm -f "'$1' bash {} \;
     if test -f $dst/../*.desktop; then
         rm -f $dst/../*.desktop $dst/../*.png
         cp $src/AppDir/$newid.* $dst/../
