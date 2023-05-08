@@ -39,7 +39,7 @@ elif test -f $dst/bin/FreeCAD && test -d $dst/share; then
     mv $dst/bin/FreeCAD $dst/bin/FreeCADLink
 
     if test $postfix; then
-        for f in $(find $dst/share -type f "$newid.*"); do
+        for f in $(find $dst/share -type f -name "$newid.*"); do
             mv $f ${f/$newid/$destid}
         done
     fi
