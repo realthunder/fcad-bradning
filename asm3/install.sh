@@ -4,6 +4,7 @@ set -xe
 src=$1
 dst=$2
 branddir=${3:-$dst}
+postfix=$FMK_DESKTOP_ID_POSTFIX
 date=${FMK_BUILD_DATE:=`date +%Y%m%d`}
 
 if test -f $dst/../MacOS/FreeCAD; then
@@ -19,12 +20,16 @@ elif test -f  $dst/bin/FreeCAD.exe; then
 elif test -f $dst/bin/FreeCAD && test -d $dst/share; then
     appid=org.freecadweb.FreeCAD
     newid=$appid.Link
+    destid=$newid$postfix
     # duplicate filename containing org.freecadweb.FreeCAD with new name in new id, and replace corresponding content
     find $dst/share/ -type f -name $appid* -exec \
-        bash -c "sed 's|$appid|$newid|' "'$1 > ${1/'"$appid/$newid} && rm -f "'$1' bash {} \;
+        bash -c "sed 's|$appid|$destid|' "'$1 > ${1/'"$appid/$newid} && rm -f "'$1' bash {} \;
     if test -f $dst/../*.desktop; then
         rm -f $dst/../*.desktop $dst/../*.png
-        cp $src/AppDir/$newid.* $dst/../
+        for f in $src/AppDir/$newid.*; do
+            name=$(basename $f)
+            cp $f $dst/../${name/$newid/$destid}
+        done
     fi
     appdir=$dst/share/applications
     mkdir -p $appdir
@@ -32,6 +37,12 @@ elif test -f $dst/bin/FreeCAD && test -d $dst/share; then
     cp $src/AppDir/$newid.* $appdir
     cp -a $src/icons $dst/share/
     mv $dst/bin/FreeCAD $dst/bin/FreeCADLink
+
+    if test $postfix; then
+        for f in $(find $dst/share -type f "$newid.*"); do
+            mv $f ${f/$newid/$destid}
+        done
+    fi
 else
     echo failed to find bin directory
     exit 1
