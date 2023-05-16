@@ -7,14 +7,14 @@ branddir=${3:-$dst}
 postfix=$FMK_DESKTOP_ID_POSTFIX
 date=${FMK_BUILD_DATE:=`date +%Y%m%d`}
 
-if test -f $dst/../MacOS/FreeCAD; then
-    cp -a $src/MacBundle/* $dst/../
-    sed -i '' "s@_FC_BUNDLE_VERSION_@${date}@g" $dst/../Info.plist
-    mv $dst/../MacOS/FreeCAD $dst/../MacOS/FreeCADLink
-elif test -f $dst/MacOS/FreeCAD; then
-    cp -a $src/MacBundle/* $dst/
-    sed -i '' "s@_FC_BUNDLE_VERSION_@${date}@g" $dst/Info.plist
-    mv $dst/MacOS/FreeCAD $dst/MacOS/FreeCADLink
+mdst=$dst
+if test -f $dst/../Info.plist; then
+    mdst=$dst/..
+fi
+if test -f $mdst/Info.plist; then
+    cp -a $src/MacBundle/* $mdst/
+    sed -i '' "s@_FC_BUNDLE_VERSION_@${date}@g" $mdst/Info.plist
+    mv $mdst/Resources/bin/FreeCAD $mdst/Resources/bin/FreeCADLink
 elif test -f  $dst/bin/FreeCAD.exe; then
     mv $dst/bin/FreeCAD.exe $dst/bin/FreeCADLink.exe
 elif test -f $dst/bin/FreeCAD && test -d $dst/share; then
