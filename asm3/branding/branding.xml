@@ -19,6 +19,7 @@
     <SplashInfoPosition>12 38</SplashInfoPosition>
     <SplashInfoExeName>FreeCAD Link Branch</SplashInfoExeName>
     <SplashInfoVersion>_FC_VERSION_MAJOR_._FC_VERSION_MINOR2_</SplashInfoVersion>
+    <IssuePage>https://github.com/realthunder/FreeCAD/issues</IssuePage>
 <!--
     <BuildRevision>_FC_REVISION_</BuildRevision>
     <StartWorkbench>PartWorkbench</StartWorkbench>
